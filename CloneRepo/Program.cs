@@ -15,22 +15,34 @@ namespace CloneRepo
             var originRepoLocation = "";
             var personalToken = "";
 
-            Console.WriteLine("Azure Devops copy to local repo!");
-            Console.WriteLine("Write location to local repo: (C:\\Projects\\MeridianPortal)");
-            localRepoLoaction = Console.ReadLine();
-            Console.WriteLine("Write location to your Azure Devops location:");
-            originRepoLocation = Console.ReadLine();
-            Console.WriteLine("Enter your personal token from Azure DevOps:");
-            personalToken = Console.ReadLine();
+            do
+            {
+                Console.WriteLine("Azure Devops copy to local repo!");
+                Console.WriteLine("Write location to local repo: (C:\\Projects\\MeridianPortal)");
+                localRepoLoaction = Console.ReadLine();
+                Console.WriteLine("Write location to your Azure Devops location:");
+                originRepoLocation = Console.ReadLine();
+                Console.WriteLine("Enter your personal token from Azure DevOps:");
+                personalToken = Console.ReadLine();
+            } while (string.IsNullOrEmpty(personalToken));
             CloneWholeAzureDevopsRepo(personalToken, localRepoLoaction, originRepoLocation);
         }
 
-        private static void CloneWholeAzureDevopsRepo(string personalToken, string localRepoLocation = "C:\\Projects\\MeridianPortal", 
-            string originRepoLoaction = "https://bluecielo.visualstudio.com/DefaultCollection/M360/_apis/git/repositories")
+        private static void CloneWholeAzureDevopsRepo(string personalToken, string localRepoLocation, 
+            string originRepoLocation)
         {
+            if (string.IsNullOrEmpty(localRepoLocation))
+            {
+                localRepoLocation = "C:\\Projects\\MeridianPortal";
+            }
+
+            if (string.IsNullOrEmpty(originRepoLocation))
+            {
+                originRepoLocation = "https://bluecielo.visualstudio.com/DefaultCollection/M360/_apis/git/repositories";
+            }
             bool success = false;
             var client = new RestClient();
-            var request = new RestRequest(originRepoLoaction, Method.GET);
+            var request = new RestRequest(originRepoLocation, Method.GET);
             var tokenArray = Encoding.UTF8.GetBytes($":{personalToken}");
             var token = Convert.ToBase64String(tokenArray);
             request.AddHeader("Authorization", $"Basic {token}");
@@ -46,17 +58,17 @@ namespace CloneRepo
                 Console.Clear();
                 Console.WriteLine("Cloning of remote repo is in progress");
                 Collection<PSObject> results = powerShell.Invoke();
-                success = results.Count == numberOfRepos;
+                success = results.Count == 0;
                 Console.WriteLine($"Number of Repos: {numberOfRepos}, Number of items to clone: {results.Count}");
             }
 
             if (success)
             {
-                Console.WriteLine("Git clone of whole Azure Devops reop finished");
+                Console.WriteLine("Git clone of whole Azure Devops repo finished");
             }
             else
             {
-                Console.WriteLine("Git clone of whole Azure Devops reop failed");
+                Console.WriteLine("Git clone of whole Azure Devops repo failed");
             }
             Console.ReadKey(true);
 
