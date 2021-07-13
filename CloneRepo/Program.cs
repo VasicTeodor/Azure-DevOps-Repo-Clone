@@ -18,7 +18,7 @@ namespace CloneRepo
             do
             {
                 Console.WriteLine("Azure Devops copy to local repo!");
-                Console.WriteLine("Write location to local repo: (C:\\Projects\\MeridianPortal)");
+                Console.WriteLine("Write location to local repo: (C:\\Projects\\Project)");
                 localRepoLoaction = Console.ReadLine();
                 Console.WriteLine("Write location to your Azure Devops location:");
                 originRepoLocation = Console.ReadLine();
@@ -33,12 +33,12 @@ namespace CloneRepo
         {
             if (string.IsNullOrEmpty(localRepoLocation))
             {
-                localRepoLocation = "C:\\Projects\\MeridianPortal";
+                localRepoLocation = "C:\\Projects\\Project";
             }
 
             if (string.IsNullOrEmpty(originRepoLocation))
             {
-                originRepoLocation = "https://bluecielo.visualstudio.com/DefaultCollection/M360/_apis/git/repositories";
+                return -1;
             }
             bool success = false;
             var client = new RestClient();
